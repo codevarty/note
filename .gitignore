@@ -41,3 +41,5 @@ out/
 application-dev.yml
 application-local.yml
 db/
+http/
+http-client.env.json
