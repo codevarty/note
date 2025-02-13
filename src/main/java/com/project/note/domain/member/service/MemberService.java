@@ -3,14 +3,15 @@ package com.project.note.domain.member.service;
 import com.project.note.domain.member.dto.RegisterRequestDto;
 import com.project.note.domain.member.dto.UpdatePasswordRequestDto;
 import com.project.note.domain.member.entity.Member;
+import com.project.note.domain.member.enums.MemberErrorCode;
 import com.project.note.domain.member.repository.MemberRepository;
+import com.project.note.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,8 +31,7 @@ public class MemberService {
     public Member saveMember(RegisterRequestDto requestDto) {
         Member findMember = findMember(requestDto.getId());
         if (findMember != null) {
-            log.error("아이디 중복 오류");
-            throw new RuntimeException("아이디 중복");
+            throw new CustomException(MemberErrorCode.DUPLICATE_MEMBER);
         }
 
         Member member = Member.builder()
@@ -51,14 +51,12 @@ public class MemberService {
     public Member updatePassword(String id, UpdatePasswordRequestDto dto) {
         Member findMember = findMember(id);
         if (findMember == null) {
-            log.error("회원이 존재하지 않습니다.");
-            throw new RuntimeException("해당 회원이 존재하지 않습니다.");
+            throw new CustomException(MemberErrorCode.NOT_FOUND_MEMBER);
         }
 
         // 기존 아이디가 불일치하면 에러 발생.
         if (!passwordEncoder.matches(dto.getOldPassword(), findMember.getPassword())) {
-            log.error("비번이 일치 하지 않습니다.");
-            throw new RuntimeException("비번 불일치");
+            throw new CustomException(MemberErrorCode.INVALID_PASSWORD);
         }
 
         findMember.changePassword(passwordEncoder.encode(dto.getNewPassword()));

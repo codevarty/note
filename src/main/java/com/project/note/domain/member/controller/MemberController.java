@@ -41,14 +41,8 @@ public class MemberController {
     }
 
     @PutMapping("/{id}/change-password")
-    public ResponseEntity<Member> updatePassword(@PathVariable String id, @RequestBody UpdatePasswordRequestDto requestDto) {
-        try {
-            Member member = memberService.updatePassword(id, requestDto);
-            return ResponseEntity.ok(member);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        }
+    public ResponseEntity<Member> updatePassword(@PathVariable("id") String id, @RequestBody UpdatePasswordRequestDto requestDto) {
+        Member updatedMember = memberService.updatePassword(id, requestDto);
+        return ResponseEntity.ok(updatedMember);
     }
 }
