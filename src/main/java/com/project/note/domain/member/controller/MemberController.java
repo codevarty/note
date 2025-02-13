@@ -19,25 +19,13 @@ public class MemberController {
 
     @GetMapping("/find-all")
     public ResponseEntity<List<Member>> findAll() {
-        try {
-            return ResponseEntity.ok(memberService.findAll());
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+        return ResponseEntity.ok(memberService.findAll());
     }
 
     @PostMapping("/register")
     public ResponseEntity<Member> register(@RequestBody RegisterRequestDto requestDto) {
-        try {
-            Member savedMember = memberService.saveMember(requestDto);
-            return ResponseEntity.ok(savedMember);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        }
+        Member savedMember = memberService.saveMember(requestDto);
+        return ResponseEntity.ok(savedMember);
     }
 
     @PutMapping("/{id}/change-password")
