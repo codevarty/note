@@ -6,18 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 public class MemberRepository {
     private final MemberMapper mapper;
 
-    public List<Member> findAll() {
-        return mapper.findAll();
+    public Optional<List<Member>> findAll() {
+        return Optional.ofNullable(mapper.findAll());
     }
 
-    public Member findByMemberId(String id) {
-        return mapper.findByMemberId(id);
+    public Optional<Member> findByMemberId(String id) {
+        return Optional.ofNullable(mapper.findByMemberId(id));
     }
 
     public void save(Member member) {
