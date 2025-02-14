@@ -1,5 +1,6 @@
 package com.project.note.global.error.handler;
 
+import com.project.note.global.error.code.BasicErrorCode;
 import com.project.note.global.error.code.ErrorCode;
 import com.project.note.global.error.exception.CustomException;
 import com.project.note.global.error.response.ErrorResponse;
@@ -19,10 +20,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.warn("handleIllegalArgumentException", e);
+        ErrorCode errorCode = BasicErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(errorCode, e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(Exception e) {
         log.warn("handleAllException", e);
-        return null;    // TODO: REQUIRE BASIC EXCEPTION ERROR CODE
+        BasicErrorCode errorCode = BasicErrorCode.INTERNAL_SERVER_ERROR;
+        return handleExceptionInternal(errorCode);
     }
 
     private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
@@ -34,6 +43,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorResponse.builder()
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
+                .build();
+    }
+
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, String message) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode, message));
+    }
+
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode, String message) {
+        return ErrorResponse.builder()
+                .code(errorCode.name())
+                .message(message)
                 .build();
     }
 }
