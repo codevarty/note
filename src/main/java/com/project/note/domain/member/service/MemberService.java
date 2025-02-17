@@ -2,6 +2,7 @@ package com.project.note.domain.member.service;
 
 import com.project.note.domain.member.dto.MemberResponseDto;
 import com.project.note.domain.member.dto.RegisterRequestDto;
+import com.project.note.domain.member.dto.UpdateMemberInfoDto;
 import com.project.note.domain.member.dto.UpdatePasswordRequestDto;
 import com.project.note.domain.member.entity.Member;
 import com.project.note.domain.member.enums.MemberErrorCode;
@@ -57,7 +58,7 @@ public class MemberService {
         // 회원이 없는 경우 에러 발생.
         Member findMember = memberRepository.findByMemberId(id)
                 .orElseThrow(() -> new CustomException(MemberErrorCode.NOT_FOUND_MEMBER));
-        // 기존 아이디가 불일치하면 에러 발생.
+        // 기존 비밀번호가 일치하지 않으면 에러 발생.
         if (!passwordEncoder.matches(dto.getOldPassword(), findMember.getPassword())) {
             throw new CustomException(MemberErrorCode.INVALID_PASSWORD);
         }
@@ -67,5 +68,24 @@ public class MemberService {
         memberRepository.update(findMember);
 
         return MemberResponseDto.of(findMember);
+    }
+
+    public MemberResponseDto updateMember(String id, UpdateMemberInfoDto requestDto) {
+        // 회원이 없는 경우 에러 발생.
+        Member findMember = memberRepository.findByMemberId(id)
+                .orElseThrow(() -> new CustomException(MemberErrorCode.NOT_FOUND_MEMBER));
+
+        findMember.changeMemberInfo(requestDto.getName(), requestDto.getBrdt());
+
+        memberRepository.update(findMember);
+
+        return MemberResponseDto.of(findMember);
+    }
+
+    public void deleteMember(String id) {
+        Member member = memberRepository.findByMemberId(id)
+                .orElseThrow(() ->new CustomException(MemberErrorCode.NOT_FOUND_MEMBER));
+
+        memberRepository.delete(member.getMemberId());
     }
 }
