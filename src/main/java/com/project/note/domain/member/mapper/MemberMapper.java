@@ -40,4 +40,7 @@ public interface MemberMapper {
     @Delete("DELETE MEMBER " +
             "WHERE MEMBER_ID = #{id}")
     void deleteMember(@Param("id") String id);
+
+    @Delete("DELETE MEMBER")
+    void deleteAllMembers();
 }

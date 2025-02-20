@@ -47,7 +47,7 @@ public class MemberService {
                 .brdt(requestDto.getBirthdate())
                 .build();
 
-        log.info("저장하는 멤버: {}", member);
+        log.info("저장하는 멤버 Id: {}", member.getMemberId());
 
         memberRepository.save(member);
 

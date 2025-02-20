@@ -32,4 +32,8 @@ public class MemberRepository {
     public void delete(String id) {
         mapper.deleteMember(id);
     }
+
+    public void deleteAll() {
+        mapper.deleteAllMembers();
+    }
 }
