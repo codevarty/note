@@ -23,6 +23,13 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    
+    public MemberResponseDto findById(String id) {
+        Member member = memberRepository.findByMemberId(id)
+                .orElseThrow(() -> new CustomException(MemberErrorCode.NOT_FOUND_MEMBER));
+
+        return MemberResponseDto.of(member);
+    }
 
     public List<MemberResponseDto> findAll() {
         List<Member> memberList = memberRepository.findAll()
@@ -84,7 +91,7 @@ public class MemberService {
 
     public void deleteMember(String id) {
         Member member = memberRepository.findByMemberId(id)
-                .orElseThrow(() ->new CustomException(MemberErrorCode.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new CustomException(MemberErrorCode.NOT_FOUND_MEMBER));
 
         memberRepository.delete(member.getMemberId());
     }

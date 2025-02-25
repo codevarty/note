@@ -22,6 +22,11 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponseDto> findById(@PathVariable("id") String id) {
+        return ResponseEntity.ok(memberService.findById(id));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<MemberResponseDto> register(@RequestBody RegisterRequestDto requestDto) {
         MemberResponseDto savedMember = memberService.saveMember(requestDto);
